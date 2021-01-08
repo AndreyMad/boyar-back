@@ -11,7 +11,7 @@ const pg = require("pg");
 
 
  const getUsers=  ()=>{
-      return  client.query('SELECT * FROM users').then(res=>{
+      return  client.query('SELECT * FROM yandexboyardots').then(res=>{
           return res.rows
       })}
 
