@@ -12,11 +12,13 @@ app.use(express.static("build"));
 app.use(cors());
 app.use(jsonParser);
 
+const port = process.env.PORT || 3000;
+
 app.listen(port, () => {
   console.log(`Example app aa:${port}`);
 });
-app.get("/", (req, res) => {
-  res.send("Hello World!");
+app.get("*", (req, res) => {
+  res.sendFile(path.join(__dirname, "../boyar-front", "build", "index.html"));
 });
 
 app.post("/api/getDots",jsonParser, async (req, res) => {
