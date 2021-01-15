@@ -1,8 +1,8 @@
 const express = require("express");
 const app = express();
-const port = 3000;
 const db = require("./postgres/index");
 const cors = require("cors");
+const path = require('path');
 const bodyParser = require("body-parser");
 
 
@@ -11,8 +11,9 @@ const jsonParser = bodyParser.json();
 app.use(express.static("build"));
 app.use(cors());
 app.use(jsonParser);
+app.use(express.static(`../boyar-front/build`));
 
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 80;
 
 app.listen(port, () => {
   console.log(`Example app aa:${port}`);
