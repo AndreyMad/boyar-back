@@ -4,7 +4,7 @@ const db = require("./postgres/index");
 const cors = require("cors");
 const path = require('path');
 const bodyParser = require("body-parser");
-
+const path = require('path');
 
 const jsonParser = bodyParser.json();
 
@@ -19,7 +19,8 @@ app.listen(port, () => {
   console.log(`Example app aa:${port}`);
 });
 app.get("*", (req, res) => {
-  res.sendFile(path.join(__dirname, "../boyar-front", "build", "index.html"));
+  res.send('hello world')
+  // res.sendFile(path.join(__dirname, "../boyar-front", "build", "index.html"));
 });
 
 app.post("/api/getDots",jsonParser, async (req, res) => {
@@ -42,6 +43,15 @@ app.post("/api/deleteDot",jsonParser, async (req, res) => {
 app.post("/api/addDot",jsonParser, async (req, res) => {
   // console.log(req.body.data);
    const dataResp = await db.addDot(req.body.data);
+   if (dataResp.error) {
+     return res.status(200).send(dataResp);
+   }
+    return res.status(200).send(dataResp);
+});
+
+app.post("/api/editDot",jsonParser, async (req, res) => {
+  // console.log(req.body.data);
+   const dataResp = await db.editDot(req.body.dot);
    if (dataResp.error) {
      return res.status(200).send(dataResp);
    }
