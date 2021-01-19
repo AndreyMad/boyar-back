@@ -18,7 +18,7 @@ app.listen(port, () => {
 });
 app.get("*", (req, res) => {
   res.send('hello world')
-  // res.sendFile(path.join(__dirname, "../boyar-front", "build", "index.html"));
+  //  res.sendFile(path.join(__dirname, "../boyar-front", "build", "index.html"));
 });
 
 app.post("/api/getDots",jsonParser, async (req, res) => {

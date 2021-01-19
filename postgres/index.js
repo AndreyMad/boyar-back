@@ -35,6 +35,7 @@ const addDot = (data) => {
     return getDots();
   });
 };
+
 const editDot = ({ name, latitude, longtitude, description, id }) => {
   const query = `UPDATE yandexboyardots SET
       latitude = '${latitude}',
@@ -43,13 +44,12 @@ const editDot = ({ name, latitude, longtitude, description, id }) => {
       description ='${description}'
   WHERE id = '${id}'
    `;
-  return  client.query(query)
-    .then(res=>{
-      if( res.rowCount===0){
-        return 'Не изменено'
-      }
-      return getDots()
-    })
+  return client.query(query).then((res) => {
+    if (res.rowCount === 0) {
+      return "Не изменено";
+    }
+    return getDots();
+  });
 };
 module.exports.getDots = getDots;
 module.exports.deleteDot = deleteDot;
