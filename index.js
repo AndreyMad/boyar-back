@@ -4,23 +4,35 @@ const db = require("./postgres/index");
 const cors = require("cors");
 const path = require('path');
 const bodyParser = require("body-parser");
-const path = require('path');
-
 const jsonParser = bodyParser.json();
+const fs= require('fs')
+var https = require( "https" )
 
 app.use(express.static("build"));
 app.use(cors());
 app.use(jsonParser);
 app.use(express.static(`../boyar-front/build`));
 
-const port = process.env.PORT || 80;
+const port = process.env.PORT || 443;
 
-app.listen(port, () => {
+const key = fs.readFileSync('cert/private.key');
+const cert = fs.readFileSync( 'cert/certificate.crt' );
+const ca = fs.readFileSync( 'cert/ca_bundle.crt' );
+
+const options = {
+  key: key,
+  cert: cert,
+  ca: ca
+};
+
+var httpsServer = https.createServer(options, app);
+httpsServer.listen(port, () => {
   console.log(`Example app aa:${port}`);
 });
+
+
 app.get("*", (req, res) => {
-  res.send('hello world')
-  // res.sendFile(path.join(__dirname, "../boyar-front", "build", "index.html"));
+   res.sendFile(path.join(__dirname, "../boyar-front", "build", "index.html"));
 });
 
 app.post("/api/getDots",jsonParser, async (req, res) => {

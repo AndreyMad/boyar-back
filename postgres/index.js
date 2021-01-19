@@ -36,20 +36,31 @@ const addDot = (data) => {
   });
 };
 const editDot = ({ name, latitude, longtitude, description, id }) => {
-  const query = `UPDATE yandexboyardots SET
-      latitude = '${latitude}',
-      longtitude = '${longtitude}',
-      name = '${name}',
-      description ='${description}'
-  WHERE id = '${id}'
-   `;
-  return  client.query(query)
-    .then(res=>{
-      if( res.rowCount===0){
-        return 'Не изменено'
-      }
-      return getDots()
-    })
+  let query = "";
+
+  //for dragging dots
+  if (!name && !description) {
+    query = `UPDATE yandexboyardots SET
+            latitude = '${latitude}',
+            longtitude = '${longtitude}'
+            WHERE id = '${id}'
+ `;
+  } 
+  //for full update
+  else {
+    query = `UPDATE yandexboyardots SET
+            latitude = '${latitude}',
+            longtitude = '${longtitude}',
+            name = '${name}',
+            description ='${description}'
+            WHERE id = '${id}'`;
+  }
+  return client.query(query).then((res) => {
+    if (res.rowCount === 0) {
+      return "Не изменено";
+    }
+    return getDots();
+  });
 };
 module.exports.getDots = getDots;
 module.exports.deleteDot = deleteDot;
