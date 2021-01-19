@@ -1,6 +1,6 @@
 const pg = require("pg");
 
-var conString =
+const conString =
   "postgres://xjqyfann:VsFPK5ncA9t_z-qWxK0bFnhm7-Q5Yp8m@dumbo.db.elephantsql.com:5432/xjqyfann"; //Can be found in the Details page
 var client = new pg.Client(conString);
 client.connect((err) => {
@@ -15,14 +15,18 @@ const getDots = () => {
     return res.rows;
   });
 };
+
 const deleteDot = (id) => {
+ 
   return client
     .query(`Delete from yandexboyardots where id = '${id}'  `)
     .then((res) => {
+   
       if (res.rowCount === 0) {
-        return "Id not in database";
+       
+        return{error: "Id not in database"};
       }
-      return getDots();
+      return {status:"succes"};
     });
 };
 
@@ -30,36 +34,25 @@ const addDot = (data) => {
   const query = `insert into yandexboyardots (latitude, longtitude, name, description, id) VALUES ('${data.latitude}', '${data.longtitude}', '${data.name}', '${data.description}', '${data.id}')`;
   return client.query(query).then((res) => {
     if (res.rowCount === 0) {
-      return "Не добавлено";
+      return new Error("NOT ADDED");
     }
-    return getDots();
+    return { status: "succes" };
   });
 };
-const editDot = ({ name, latitude, longtitude, description, id }) => {
-  let query = "";
 
-  //for dragging dots
-  if (!name && !description) {
-    query = `UPDATE yandexboyardots SET
-            latitude = '${latitude}',
-            longtitude = '${longtitude}'
-            WHERE id = '${id}'
- `;
-  } 
-  //for full update
-  else {
-    query = `UPDATE yandexboyardots SET
-            latitude = '${latitude}',
-            longtitude = '${longtitude}',
-            name = '${name}',
-            description ='${description}'
-            WHERE id = '${id}'`;
-  }
+const editDot = ({ name, latitude, longtitude, description, id }) => {
+  const query = `UPDATE yandexboyardots SET
+      latitude = '${latitude}',
+      longtitude = '${longtitude}',
+      name = '${name}',
+      description ='${description}'
+  WHERE id = '${id}'
+   `;
   return client.query(query).then((res) => {
     if (res.rowCount === 0) {
-      return "Не изменено";
+      return new Error("Не изменено");
     }
-    return getDots();
+    return { status: "succes" };
   });
 };
 module.exports.getDots = getDots;
