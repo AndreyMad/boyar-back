@@ -20,9 +20,9 @@ const deleteDot = (id) => {
     .query(`Delete from yandexboyardots where id = '${id}'  `)
     .then((res) => {
       if (res.rowCount === 0) {
-        return "Id not in database";
+        return new Error("Id not in database");
       }
-      return getDots();
+      return 'succes'
     });
 };
 
@@ -30,9 +30,11 @@ const addDot = (data) => {
   const query = `insert into yandexboyardots (latitude, longtitude, name, description, id) VALUES ('${data.latitude}', '${data.longtitude}', '${data.name}', '${data.description}', '${data.id}')`;
   return client.query(query).then((res) => {
     if (res.rowCount === 0) {
-      return "Не добавлено";
+      return new Error("NOT ADDED");
     }
-    return getDots();
+    console.log('%cindex.js line:35 res', 'color: #007acc;', res);
+    return {status:'succes'}
+ 
   });
 };
 
