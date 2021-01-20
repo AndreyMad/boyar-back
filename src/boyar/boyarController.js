@@ -1,0 +1,58 @@
+const db = require("../../postgres/index");
+const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
+const config = require("../../config");
+const getDots = async (req, res) => {
+  const dataResp = await db.getDots();
+  if (dataResp.error) {
+    return res.status(200).send(dataResp);
+  }
+  return res.status(201).send(dataResp);
+};
+
+const deleteDot = async (req, res) => {
+  const dataResp = await db.deleteDot(req.body.id);
+  if (dataResp.error) {
+    return res.status(203).send(dataResp);
+  }
+  return res.status(200).send(dataResp);
+};
+
+const addDot = async (req, res) => {
+  const dataResp = await db.addDot(req.body.data);
+  if (dataResp.error) {
+    return res.status(403).send(dataResp);
+  }
+  return res.status(200).send(dataResp);
+};
+
+const editDot = async (req, res) => {
+  const dataResp = await db.editDot(req.body.dot);
+  if (dataResp.error) {
+    return res.status(403).send(dataResp);
+  }
+
+  return res.status(200).send(dataResp);
+};
+
+
+const boyarAuth = async (req, res) => {
+  const user = req.body.user;
+  const userFromDB = await db.checkBoyarUser(user);
+  if (!userFromDB) {
+    return res.status(200).json("Incorrect Login");
+  }
+  const isPasswValid = bcrypt.compareSync(
+    req.body.user.password,
+    userFromDB.password
+  );
+  if (!isPasswValid) {
+    return res.status(200).json("Incorrect Password");
+  }
+  
+  const token = jwt.sign(userFromDB.id, config.secret);
+  db.updateBoyarUserToken(userFromDB.login, token)
+  return res.status(200).send(token);
+};
+
+module.exports = { addDot, editDot, deleteDot, getDots, boyarAuth };

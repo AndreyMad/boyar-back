@@ -1,13 +1,14 @@
 const pg = require("pg");
 
 const conString =
-  "postgres://xjqyfann:VsFPK5ncA9t_z-qWxK0bFnhm7-Q5Yp8m@dumbo.db.elephantsql.com:5432/xjqyfann"; //Can be found in the Details page
+  "postgres://xjqyfann:BD78ceWS83fAMP8xmskO-SJmaS6Yazzg@dumbo.db.elephantsql.com:5432/xjqyfann"; //Can be found in the Details page
 var client = new pg.Client(conString);
 client.connect((err) => {
   if (err) {
     return console.error("could not connect to postgres", err);
   }
   return console.log("postgree connected");
+  
 });
 
 const getDots = () => {
@@ -55,7 +56,27 @@ const editDot = ({ name, latitude, longtitude, description, id }) => {
     return { status: "succes" };
   });
 };
+
+const checkBoyarUser = (user)=>{
+  return client.query(`SELECT * FROM boyaradmins where login ='${user.login}'`).then((res) => {
+    return res.rows[0];
+  });
+}
+const updateBoyarUserToken = (login,token)=>{
+  const query = `UPDATE boyaradmins SET
+  sessionid = '${token}'
+  WHERE login = '${login}'
+`;
+return client.query(query).then((res) => {
+  if (res.rowCount === 0) {
+    return new Error("Не изменено");
+  }
+  return { status: "succes" };
+});
+}
 module.exports.getDots = getDots;
 module.exports.deleteDot = deleteDot;
 module.exports.addDot = addDot;
 module.exports.editDot = editDot;
+module.exports.checkBoyarUser = checkBoyarUser;
+module.exports.updateBoyarUserToken= updateBoyarUserToken;
