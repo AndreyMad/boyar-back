@@ -49,10 +49,15 @@ const boyarAuth = async (req, res) => {
   if (!isPasswValid) {
     return res.status(200).json("Incorrect Password");
   }
-  
   const token = jwt.sign(userFromDB.id, config.secret);
   db.updateBoyarUserToken(userFromDB.login, token)
-  return res.status(200).send(token);
+  return res.status(200).send({token: token, status:'succes'});
 };
 
-module.exports = { addDot, editDot, deleteDot, getDots, boyarAuth };
+const checkSessionToken =async (req,res)=>{
+  const dataResp =await db.checkSessionToken(req.body.token)
+  if(!dataResp){return res.status(200).send({status: 'not authorized'})}
+  return res.status(200).send({status:'sheck succes', username:dataResp.login})
+}
+
+module.exports = { addDot, editDot, deleteDot, getDots, boyarAuth,checkSessionToken };

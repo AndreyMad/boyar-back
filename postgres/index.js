@@ -27,7 +27,9 @@ const deleteDot = (id) => {
        
         return{error: "Id not in database"};
       }
+    
       return {status:"succes"};
+     
     });
 };
 
@@ -64,7 +66,7 @@ const checkBoyarUser = (user)=>{
 }
 const updateBoyarUserToken = (login,token)=>{
   const query = `UPDATE boyaradmins SET
-  sessionid = '${token}'
+  sessiontoken = '${token}'
   WHERE login = '${login}'
 `;
 return client.query(query).then((res) => {
@@ -74,9 +76,17 @@ return client.query(query).then((res) => {
   return { status: "succes" };
 });
 }
+
+const checkSessionToken = (token)=>{
+  return client.query(`SELECT * FROM boyaradmins where sessiontoken ='${token}'`).then((res) => {
+    return res.rows[0];
+  });
+}
+
 module.exports.getDots = getDots;
 module.exports.deleteDot = deleteDot;
 module.exports.addDot = addDot;
 module.exports.editDot = editDot;
 module.exports.checkBoyarUser = checkBoyarUser;
 module.exports.updateBoyarUserToken= updateBoyarUserToken;
+module.exports.checkSessionToken= checkSessionToken;
