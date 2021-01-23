@@ -18,7 +18,8 @@ const boyarRouter =require('./boyar/boyarRouter')
 function start() {
 app.use(cors());
 app.use(jsonParser);
-app.use(express.static(`../../boyar-front/build`));
+app.use( express.static(path.join(__dirname, '../../boyar-front/build')));
+
 app.use("/boyar", boyarRouter);
 
 const options = {
@@ -33,8 +34,8 @@ httpsServer.listen(config.port, () => {
 });
 
 app.get("*", (req, res) => {
-    res.send('hello world')
-    //  res.sendFile(path.join(__dirname, "../boyar-front", "build", "index.html"));
+    // res.send('hello world')
+     res.sendFile(path.join(__dirname, "../../boyar-front", "build", "index.html"));
   });
   
 
