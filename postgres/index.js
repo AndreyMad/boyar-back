@@ -44,13 +44,24 @@ const addDot = (data) => {
 };
 
 const editDot = ({ name, latitude, longtitude, description, id }) => {
-  const query = `UPDATE yandexboyardots SET
-      latitude = '${latitude}',
-      longtitude = '${longtitude}',
-      name = '${name}',
-      description ='${description}'
-  WHERE id = '${id}'
-   `;
+  let query =''
+  if(!name&&!description)
+  {
+    query = `UPDATE yandexboyardots SET
+    latitude = '${latitude}',
+    longtitude = '${longtitude}'
+   WHERE id = '${id}'
+ `;
+  }else{
+    query = `UPDATE yandexboyardots SET
+    latitude = '${latitude}',
+    longtitude = '${longtitude}',
+    name = '${name}',
+    description ='${description}'
+   WHERE id = '${id}'
+ `;
+  }
+ 
   return client.query(query).then((res) => {
     if (res.rowCount === 0) {
       return new Error("Не изменено");
