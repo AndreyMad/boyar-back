@@ -15,6 +15,7 @@ const boyarRouter =require('./boyar/boyarRouter')
 
 
 
+
 function start() {
 app.use(cors());
 app.use(jsonParser);
@@ -31,6 +32,11 @@ const options = {
 var httpsServer = https.createServer(options, app);
 httpsServer.listen(config.port, () => {
   console.log(`Example app aa:${config.port}`);
+});
+
+const io = require('socket.io')(httpsServer);
+io.on('connection', (socket) => {
+  console.log('a user connected');
 });
 
 app.get("*", (req, res) => {
