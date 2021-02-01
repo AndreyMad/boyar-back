@@ -42,6 +42,9 @@ function start() {
     socket.on("event", function (data) {
       console.log("event fired");
     });
+    socket.on('sendmessage', (data)=>{
+      console.log(data);
+    })
 
     socket.on("disconnect", function () {
       console.log("user disconnected");
