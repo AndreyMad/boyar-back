@@ -35,18 +35,22 @@ function start() {
       methods: ["GET", "POST"],
     },
   });
-
+  let dataObj = {}
+  let clients=0;
   io.on("connection", function (socket) {
-    console.log("user connected with socketId " + socket.id);
-
+    clients++;
+    io.sockets.emit('broadcast',{ description: clients + ' clients connected!'});
     socket.on("event", function (data) {
       console.log("event fired");
     });
     socket.on('sendmessage', (data)=>{
-      console.log(data);
-    })
+      dataObj={data}
+      io.sockets.emit("getmessage", dataObj);
 
+
+    })
     socket.on("disconnect", function () {
+      clients--
       console.log("user disconnected");
     });
   });
