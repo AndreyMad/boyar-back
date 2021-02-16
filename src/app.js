@@ -12,48 +12,39 @@ const cert = fs.readFileSync("cert/certificate.crt");
 const ca = fs.readFileSync("cert/ca_bundle.crt");
 const config = require("../config");
 const boyarRouter = require("./boyar/boyarRouter");
-const socketIo = require("socket.io");
+const options = {
+  key: key,
+  cert: cert,
+  ca: ca,
+};
 
-function start() {
+
+// const  httpsServer = https.createServer(options, app);
+
+const httpServer = http.createServer(app);
+const io = require('socket.io')(httpServer, {
+  cors: {
+    origin: "*",
+    methods: ["GET", "POST"],
+  },
+});
+io.on("connection", (socket) => {
+  console.log("Users component is connected");
+  console.log(socket.id);
+
+  socket.on("disconnect", () => {
+    console.log(`User ${socket.id} was disconnected`);
+  });
+})
+
+
+function startServer() {
   app.use(cors());
   app.use(jsonParser);
   app.use(express.static(path.join(__dirname, "../../mypage-front/build")));
-
   app.use("/boyar", boyarRouter);
 
-  const options = {
-    key: key,
-    cert: cert,
-    ca: ca,
-  };
 
-  // const  httpsServer = https.createServer(options, app);
-  const httpServer = http.createServer(app);
-  const io = socketIo(httpServer, {
-    cors: {
-      origin: "*",
-      methods: ["GET", "POST"],
-    },
-  });
-  let dataObj = {}
-  let clients=0;
-  io.on("connection", function (socket) {
-    clients++;
-    io.sockets.emit('broadcast',{ description: clients + ' clients connected!'});
-    socket.on("event", function (data) {
-      console.log("event fired");
-    });
-    socket.on('sendmessage', (data)=>{
-      dataObj={data}
-      io.sockets.emit("getmessage", dataObj);
-
-
-    })
-    socket.on("disconnect", function () {
-      clients--
-      console.log("user disconnected");
-    });
-  });
 
   // httpsServer.listen(config.port, () => {
   //   console.log(`Example  at:${config.port}`);
@@ -68,4 +59,10 @@ function start() {
     //  res.sendFile(path.join(__dirname, "../..mypage-front", "build", "index.html"));
   });
 }
-module.exports = start;
+
+
+
+module.exports = io;
+module.exports = startServer;
+
+

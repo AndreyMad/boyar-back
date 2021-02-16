@@ -1,7 +1,7 @@
 const pg = require("pg");
 
 const conString =
-  "postgres://xjqyfann:BD78ceWS83fAMP8xmskO-SJmaS6Yazzg@dumbo.db.elephantsql.com:5432/xjqyfann"; //Can be found in the Details page
+  "postgres://xjqyfann:BD78ceWS83fAMP8xmskO-SJmaS6Yazzg@dumbo.db.elephantsql.com:5432/xjqyfann"; 
 var client = new pg.Client(conString);
 client.connect((err) => {
   if (err) {
